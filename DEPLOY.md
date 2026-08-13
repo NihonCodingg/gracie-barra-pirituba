@@ -62,6 +62,33 @@ início do arquivo para ele começar a tocar antes de baixar inteiro.
 - [x] Grade de horários vira cards por dia no mobile
 - [x] Console sem erros da aplicação
 
+### Ajustes específicos de celular
+
+Todos vivem em variantes `max-sm` (abaixo de 640px) ou `max-lg` (abaixo
+de 1024px), que compilam para media queries de largura máxima — no
+desktop a regra literalmente não existe no CSS. A garantia é estrutural.
+
+- [x] Respiro das seções: 80px → 56px no celular. Em tela de 812px, 80px
+      em cima e embaixo eram 20% de uma tela em branco entre seções
+- [x] Alvos de toque: os links do rodapé tinham 22px de altura, metade do
+      mínimo de 44px para o dedo. **11 alvos fora do padrão viraram 1** —
+      o que sobrou é o "WhatsApp" dentro da frase do FAQ, um link inline
+      que não pode esticar sem quebrar a entrelinha do parágrafo
+- [x] Legibilidade do Hero: o escurecimento era horizontal, correto no
+      desktop, onde o texto ocupa a metade esquerda. No celular o texto
+      ocupa a largura inteira e caía sobre a faixa de 30% de cobertura,
+      com quadros claros do vídeo brigando com o parágrafo. Abaixo de
+      `lg` entra um escurecimento vertical com parada em 38%
+- [x] Seção de fotos: **3.186px → 2.408px** (3,9 → 3,0 telas). A altura
+      do card define o tamanho da foto e o scroll consumido ao mesmo
+      tempo; virou custom property para poder cair de 62vh para 46vh só
+      no celular
+- [x] Página inteira: **18.046px → 16.878px** (22,2 → 20,8 telas)
+- [x] Desktop conferido a cada mudança comparando 1.815 elementos —
+      geometria, tipografia, espaçamento, display e grid de cada um —
+      contra um baseline capturado antes: altura idêntica ao pixel
+      (15.156px)
+
 ### Correções visuais desta rodada
 
 - [x] Acentuação em português deixou de ser cortada nos textos animados.
@@ -70,6 +97,13 @@ início do arquivo para ele começar a tocar antes de baixar inteiro.
       justas demais para cedilha e acento
 - [x] Risco solto que aparecia sobre o "g" de "Metodologia" e o "p" de
       "Depoimentos" no rodapé
+- [x] Três fotos podiam ficar invisíveis (a de "A Academia", a do Mestre
+      e a da Localização). O componente de reveal escondia a imagem por
+      padrão e só a mostrava quando a animação rodava — qualquer falha
+      nessa cadeia deixava a foto oculta para sempre. Agora o efeito
+      falha aberto: uma verificação que não depende de observer nem de
+      `requestAnimationFrame` devolve a foto visível se a animação não
+      tiver acontecido
 
 ### SEO
 
@@ -93,9 +127,14 @@ início do arquivo para ele começar a tocar antes de baixar inteiro.
 ## 2. Publicar na Vercel
 
 1. **Importar o repositório**
-   Em <https://vercel.com/new>, importar `NihonCodingg/GRACIE-BARRA-AZUL`.
-   A Vercel detecta Next.js sozinha — não mexer em build command nem em
-   output directory.
+   Em <https://vercel.com/new>, importar
+   `NihonCodingg/GRACIE-BARRA-AZUL-MOBILE-MELHOR`.
+
+   A Vercel detecta Next.js sozinha: não mexer em Framework Preset,
+   Build Command, Output Directory nem Install Command. O
+   `package-lock.json` está versionado, então a instalação é
+   reproduzível, e o `engines.node` do `package.json` fixa o Node em
+   20.9 ou superior, que é o mínimo exigido pelo Next 16.
 
 2. **Variável de ambiente**
    Depois que o domínio final estiver definido, criar:
@@ -138,6 +177,21 @@ início do arquivo para ele começar a tocar antes de baixar inteiro.
 ---
 
 ## 4. Itens abertos
+
+### A caixa que revela os headlines pinta branco, não vermelho
+
+Aguardando decisão — **não foi alterado**, porque mexeria no desktop.
+
+O componente `reveal-text.tsx` recebe `boxClassName="bg-primary"` para a
+caixa que varre o texto do Hero e do CTA final. Só que a classe base
+vendorizada traz também `dark:bg-neutral-100`, e o `tailwind-merge` não
+remove uma classe com prefixo `dark:` ao mesclar com uma sem prefixo.
+Como o `<html>` tem `class="dark"`, ela vence: a cor pintada é
+`lab(96.52 0 0)`, branco.
+
+Na prática, "SEU CAMINHO COMEÇA NO TATAME" é revelado por um lampejo
+branco varrendo o texto, quando a intenção do código era o vermelho da
+marca. A correção é remover `dark:bg-neutral-100` de `baseBoxStyles`.
 
 ### Informações que dependem da academia
 
