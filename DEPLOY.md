@@ -128,7 +128,7 @@ desktop a regra literalmente não existe no CSS. A garantia é estrutural.
 
 1. **Importar o repositório**
    Em <https://vercel.com/new>, importar
-   `NihonCodingg/GRACIE-BARRA-AZUL-MOBILE-MELHOR`.
+   `NihonCodingg/gracie-barra-pirituba`.
 
    A Vercel detecta Next.js sozinha: não mexer em Framework Preset,
    Build Command, Output Directory nem Install Command. O
